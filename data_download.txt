@@ -1,0 +1,32 @@
+Please follow the instructions to download the public data
+
+[1] Data: Dsprites for Disentangling application
+Step1: Enter the path "./Disentangling/"
+Step2 >>: sh prepare_data.sh dsprites
+
+##---CelebA data---
+[2] CelebA data for Image Generation Application
+Step 1: Download public data in the website: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
+Step2: 
+# first download img_align_celeba.zip and put in data directory like below
+└── data
+    └── img_align_celeba.zip
+
+Step3: Enter the folder "Image_generation", and then run scrip file
+>> sh prepare_data.sh CelebA
+>> python3 data_split.py
+
+##---PTB data--
+[3] PTB data for Language modeling Application
+Step1: enter the path "./Language_modeling/Text_gen_PTB", and then run (install Texar torch first)
+>> python prepare_data.py --data ptb
+
+
+##---Switchboard(SW) data----
+[4]Switchboard(SW) data for Dialog-generation
+1) Please Download Glove word embeddings from http://nlp.stanford.edu/data/glove.twitter.27B.zip. The default setting use 200 dimension word embedding trained on Twitter.
+Then unzip and save the data into the path "./glove/glove.twitter.27B.200d.txt"
+
+2) We already download the SW data and zip it in the path "./Language_modeling/NeuralDialog/data.zip, please unzip it.
+
+

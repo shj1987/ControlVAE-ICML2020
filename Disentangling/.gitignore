@@ -1,0 +1,7 @@
+__pycache__/
+data/
+*.tar
+checkpoints/
+outputs/
+outputs_v1_sprites/
+*.log

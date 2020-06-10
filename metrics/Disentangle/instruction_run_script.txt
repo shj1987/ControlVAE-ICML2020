@@ -1,0 +1,5 @@
+1. put MIG_metric.py into the current model folder
+2. copy model.py into the current path
+3. We can use ”last" checkpoint to get MIG metric
+3. Run: python MIG_metric.py betavae_h "/home/ubuntu/......checkpoint/last"
+

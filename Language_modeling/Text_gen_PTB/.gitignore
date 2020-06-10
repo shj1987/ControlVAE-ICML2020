@@ -1,0 +1,10 @@
+data/
+.vscode/
+simple-examples/
+__pycache__/
+pid_b*/
+cost_anneal*/
+cyclical_b*/
+runs/
+*.log
+*.out
