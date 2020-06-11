@@ -23,10 +23,10 @@ Please cite our paper: <br />
   * Step2: first download img_align_celeba.zip and put in data directory like below
       *data/img_align_celeba.zip
   * Step3: Enter the folder "Image_generation", and then run scrip file
-      * bash prepare_data.sh CelebA
-      * then run: data_split.py to split the data into training and testing data
-      * python3 data_split.py
- 
+  ```
+      $ bash prepare_data.sh CelebA
+      $ python3 data_split.py // split the data into training and testing data
+  ```
 
 #### -PTB data
 3. PTB data for Language modeling Application
