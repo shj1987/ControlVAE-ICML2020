@@ -298,8 +298,8 @@ def main():
             _, _ = _run_epoch(epoch, 'train', display=200)
             val_nll, _ = _run_epoch(epoch, 'valid')
             test_nll, test_ppl = _run_epoch(epoch, 'test')
-            nll_list.append(nll_list)
-            ppl_list.append(ppl)
+            nll_list.append(test_nll)
+            ppl_list.append(test_ppl)
 
             if val_nll < opt_vars['best_valid_nll']:
                 opt_vars['best_valid_nll'] = val_nll
@@ -336,16 +336,16 @@ def main():
 
     elif args.mode == "test":
         test_nll, test_ppl = _run_epoch(1, 'test')
-        nll_list.append(nll_list)
-        ppl_list.append(ppl)
+        nll_list.append(test_nll)
+        ppl_list.append(test_ppl)
         
     # print(f"\nbest testing nll: {best_nll:.4f},"
     #       f"best testing ppl {best_ppl:.4f}\n")
-    avg_nll = np.mean(nll_list)
-    avg_ppl = np.mean(ppl_list)
-
-    print(f"\navg testing nll: {avg_nll:.4f},"
-          f"avg testing ppl {avg_ppl:.4f}\n")
+    # avg_nll = np.mean(nll_list)
+    # avg_ppl = np.mean(ppl_list)
+    
+    # print(f"\navg testing nll: {avg_nll:.4f},"
+    #       f"avg testing ppl {avg_ppl:.4f}\n")
     
     if args.mode == "train":
         fw_log.write(f"\nbest testing nll: {best_nll:.4f},"

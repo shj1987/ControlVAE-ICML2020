@@ -6,6 +6,7 @@ def _active_unit(model, test_data_batch, start_tokens, end_token, delta=0.01):
     """
     cnt = 0
     kl_weight = 1
+    means_sum = 0
     for batch_data in test_data_batch:
         ret = model(batch_data, kl_weight, start_tokens, end_token)
         mean = ret['mu']
@@ -16,6 +17,7 @@ def _active_unit(model, test_data_batch, start_tokens, end_token, delta=0.01):
     mean_mean = means_sum / cnt
 
     cnt = 0
+    var_sum = 0
     for batch_data in test_data_batch:
         ret = model(batch_data, kl_weight, start_tokens, end_token)
         mean = ret['mu']
