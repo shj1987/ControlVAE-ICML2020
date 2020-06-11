@@ -114,9 +114,8 @@ class VAE(nn.Module):
             "kl_loss": kl_loss,
             "rc_loss": rc_loss,
             "lengths": seq_lengths,
-            "mu":mean,
         }
-        
+
         return ret
 
     def _embed_fn_rnn(self, tokens: torch.LongTensor) -> Tensor:
@@ -138,7 +137,7 @@ class VAE(nn.Module):
         output_w_embed = output_w_embed * self._config.hidden_size ** 0.5
         output_embed = output_w_embed + output_p_embed
         return output_embed
-        
+
     @property
     def decoder(self) -> tx.modules.DecoderBase:
         if self._config.decoder_type == "lstm":
@@ -174,5 +173,4 @@ class VAE(nn.Module):
                 helper=helper,
                 max_decoding_length=max_decoding_length)
         return outputs
-        
     

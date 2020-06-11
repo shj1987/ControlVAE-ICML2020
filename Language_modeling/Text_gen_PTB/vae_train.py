@@ -42,7 +42,6 @@ from model import VAE
 from PID import PIDControl
 from annealing import _cost_annealing, _cyclical_annealing
 from tqdm import tqdm
-from utils import _active_unit
 
 from torch.utils.tensorboard import SummaryWriter
 writer = SummaryWriter()
@@ -61,7 +60,7 @@ parser.add_argument('--Kp', type=float, default=0.01, help="Kp for pid.")
 parser.add_argument('--Ki', type=float, default=-0.0001, help="Kp for pid.")
 parser.add_argument('--cycle', type=float, default=4, help="Kp for pid.")
 parser.add_argument('--anneal_steps', type=float, default=10000, help="steps for anneal.")
-parser.add_argument('--max_steps', type=int, default=80000, help="steps for anneal.")
+parser.add_argument('--max_steps', type=int, default=20000, help="steps for anneal.")
 
 
 args = parser.parse_args()
@@ -165,21 +164,13 @@ def main():
         start_time = time.time()
         num_words = 0
         nll_total = 0.
-        
+
         avg_rec = tx.utils.AverageRecorder()
-
-        ## compute active unit
-        if mode == 'test':
-            ac_count = _active_unit(model, iterator, start_tokens, end_token)
-            print("num of active unit: ", ac_count)
-
         for batch in iterator:
             ## run model to get loss function
             if global_steps['step']>= args.max_steps:
                 break
             ret = model(batch, kl_weight, start_tokens, end_token)
-            # mean = ret['mu']
-
             if mode == "train":
                 pbar.update(1)
                 global_steps['step'] += 1
@@ -224,12 +215,11 @@ def main():
         nll = avg_rec.avg(0)
         KL = avg_rec.avg(1)
         rc = avg_rec.avg(2)
-        log_ppl = nll_total / num_words
+        log_ppl = nll_total / (num_words+0.01)
         ppl = math.exp(log_ppl)
         print(f"\n{mode}: epoch {epoch}, nll {nll:.4f}, KL {KL:.4f}, "
               f"rc {rc:.4f}, log_ppl {log_ppl:.4f}, ppl {ppl:.4f}")
         return nll, ppl  # type: ignore
-        
         
     args.model = save_path
     @torch.no_grad()
@@ -290,73 +280,59 @@ def main():
     print(f"{total_parameters} total parameters")
     
     best_nll = best_ppl = 0.
-    nll_list = []
-    ppl_list = []
+
     ## start running model
-    if args.mode == "train":
-        for epoch in range(config.num_epochs):
-            _, _ = _run_epoch(epoch, 'train', display=200)
-            val_nll, _ = _run_epoch(epoch, 'valid')
-            test_nll, test_ppl = _run_epoch(epoch, 'test')
-            nll_list.append(test_nll)
-            ppl_list.append(test_ppl)
+    for epoch in range(config.num_epochs):
+        _, _ = _run_epoch(epoch, 'train', display=200)
+        val_nll, _ = _run_epoch(epoch, 'valid')
+        test_nll, test_ppl = _run_epoch(epoch, 'test')
 
-            if val_nll < opt_vars['best_valid_nll']:
-                opt_vars['best_valid_nll'] = val_nll
+        if val_nll < opt_vars['best_valid_nll']:
+            opt_vars['best_valid_nll'] = val_nll
+            opt_vars['steps_not_improved'] = 0
+            best_nll = test_nll
+            best_ppl = test_ppl
+
+            states = {
+                "model": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                "scheduler": scheduler.state_dict()
+            }
+            torch.save(states, save_path)
+        else:
+            opt_vars['steps_not_improved'] += 1
+            if opt_vars['steps_not_improved'] == decay_ts:
+                old_lr = opt_vars['learning_rate']
+                opt_vars['learning_rate'] *= decay_factor
                 opt_vars['steps_not_improved'] = 0
-                best_nll = test_nll
-                best_ppl = test_ppl
+                new_lr = opt_vars['learning_rate']
+                ckpt = torch.load(save_path)
+                model.load_state_dict(ckpt['model'])
+                optimizer.load_state_dict(ckpt['optimizer'])
+                scheduler.load_state_dict(ckpt['scheduler'])
+                scheduler.step()
+                print(f"-----\nchange lr, old lr: {old_lr}, "
+                      f"new lr: {new_lr}\n-----")
 
-                states = {
-                    "model": model.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                    "scheduler": scheduler.state_dict()
-                }
-                torch.save(states, save_path)
-            else:
-                opt_vars['steps_not_improved'] += 1
-                if opt_vars['steps_not_improved'] == decay_ts:
-                    old_lr = opt_vars['learning_rate']
-                    opt_vars['learning_rate'] *= decay_factor
-                    opt_vars['steps_not_improved'] = 0
-                    new_lr = opt_vars['learning_rate']
-                    ckpt = torch.load(save_path)
-                    model.load_state_dict(ckpt['model'])
-                    optimizer.load_state_dict(ckpt['optimizer'])
-                    scheduler.load_state_dict(ckpt['scheduler'])
-                    scheduler.step()
-                    print(f"-----\nchange lr, old lr: {old_lr}, "
-                          f"new lr: {new_lr}\n-----")
+                decay_cnt += 1
+                if decay_cnt == max_decay:
+                    break
+        if global_steps['step'] >= args.max_steps:
+            break
 
-                    decay_cnt += 1
-                    if decay_cnt == max_decay:
-                        break
-            if global_steps['step'] >= args.max_steps:
-                break
-
-    elif args.mode == "test":
-        test_nll, test_ppl = _run_epoch(1, 'test')
-        nll_list.append(test_nll)
-        ppl_list.append(test_ppl)
-        
-    # print(f"\nbest testing nll: {best_nll:.4f},"
-    #       f"best testing ppl {best_ppl:.4f}\n")
-    # avg_nll = np.mean(nll_list)
-    # avg_ppl = np.mean(ppl_list)
-    
-    # print(f"\navg testing nll: {avg_nll:.4f},"
-    #       f"avg testing ppl {avg_ppl:.4f}\n")
+    print(f"\nbest testing nll: {best_nll:.4f},"
+          f"best testing ppl {best_ppl:.4f}\n")
     
     if args.mode == "train":
         fw_log.write(f"\nbest testing nll: {best_nll:.4f},"
           f"best testing ppl {best_ppl:.4f}\n")
         fw_log.close()
-        
+
 
 if __name__ == '__main__':
     main()
     print("well done!!!!!")
-
+    
 
 
     
