@@ -2,7 +2,7 @@ data/
 .vscode/
 simple-examples/
 __pycache__/
-pid_b*/
+pid_*/
 cost_anneal*/
 cyclical_b*/
 runs/
