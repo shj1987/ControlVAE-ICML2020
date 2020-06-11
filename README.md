@@ -24,6 +24,7 @@ Please cite our paper: <br />
       *data/img_align_celeba.zip
   * Step3: Enter the folder "Image_generation", and then run scrip file
       * bash prepare_data.sh CelebA
+      * then run: data_split.py to split the data into training and testing data
       * python3 data_split.py
  
 
