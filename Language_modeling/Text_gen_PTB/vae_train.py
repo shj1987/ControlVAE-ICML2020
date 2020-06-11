@@ -60,7 +60,7 @@ parser.add_argument('--Kp', type=float, default=0.01, help="Kp for pid.")
 parser.add_argument('--Ki', type=float, default=-0.0001, help="Kp for pid.")
 parser.add_argument('--cycle', type=float, default=4, help="Kp for pid.")
 parser.add_argument('--anneal_steps', type=float, default=10000, help="steps for anneal.")
-parser.add_argument('--max_steps', type=int, default=20000, help="steps for anneal.")
+parser.add_argument('--max_steps', type=int, default=5000, help="steps for anneal.")
 
 
 args = parser.parse_args()
@@ -168,8 +168,8 @@ def main():
         avg_rec = tx.utils.AverageRecorder()
         for batch in iterator:
             ## run model to get loss function
-            if global_steps['step']>= args.max_steps:
-                break
+            # if global_steps['step']>= args.max_steps:
+            #     break
             ret = model(batch, kl_weight, start_tokens, end_token)
             if mode == "train":
                 pbar.update(1)
@@ -215,8 +215,15 @@ def main():
         nll = avg_rec.avg(0)
         KL = avg_rec.avg(1)
         rc = avg_rec.avg(2)
-        log_ppl = nll_total / (num_words+0.01)
-        ppl = math.exp(log_ppl)
+        if num_words > 0:
+            log_ppl = nll_total / num_words
+            ppl = math.exp(log_ppl)
+        else:
+            log_ppl = 100
+            ppl = math.exp(log_ppl)
+            nll = 1000
+            KL = args.exp_kl
+        
         print(f"\n{mode}: epoch {epoch}, nll {nll:.4f}, KL {KL:.4f}, "
               f"rc {rc:.4f}, log_ppl {log_ppl:.4f}, ppl {ppl:.4f}")
         return nll, ppl  # type: ignore
@@ -327,7 +334,7 @@ def main():
         fw_log.write(f"\nbest testing nll: {best_nll:.4f},"
           f"best testing ppl {best_ppl:.4f}\n")
         fw_log.close()
-
+        
 
 if __name__ == '__main__':
     main()
