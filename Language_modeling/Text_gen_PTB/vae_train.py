@@ -60,7 +60,7 @@ parser.add_argument('--Kp', type=float, default=0.01, help="Kp for pid.")
 parser.add_argument('--Ki', type=float, default=-0.0001, help="Kp for pid.")
 parser.add_argument('--cycle', type=float, default=4, help="Kp for pid.")
 parser.add_argument('--anneal_steps', type=float, default=10000, help="steps for anneal.")
-parser.add_argument('--max_steps', type=int, default=5000, help="steps for anneal.")
+parser.add_argument('--max_steps', type=int, default=80000, help="steps for anneal.")
 
 
 args = parser.parse_args()
