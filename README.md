@@ -12,8 +12,8 @@ Please cite our paper: <br />
 
 
 ---
-### Recent Changes
-#### 2020.06.11
+### <span style="color:red">Recent Changes</span>
+#### 2020.06.12
 * Updating the language model of text generation on PTB data. Previously, I forgot to commit it from my AWS server. Please use the latest version.
 
 ---
