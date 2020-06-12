@@ -168,8 +168,8 @@ def main():
         avg_rec = tx.utils.AverageRecorder()
         for batch in iterator:
             ## run model to get loss function
-            # if global_steps['step']>= args.max_steps:
-            #     break
+            if global_steps['step']>= args.max_steps:
+                break
             ret = model(batch, kl_weight, start_tokens, end_token)
             if mode == "train":
                 pbar.update(1)
