@@ -21,7 +21,7 @@ Please cite our paper: <br />
 2. CelebA data for Image Generation Application
   * Step 1: Download public data in the website: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
   * Step2: first download img_align_celeba.zip and put in data directory like below
-      *data/img_align_celeba.zip
+      ./data/img_align_celeba.zip
   * Step3: Enter the folder "Image_generation", and then run scrip file
   ```
       $ bash prepare_data.sh CelebA
@@ -54,7 +54,7 @@ Then unzip and save the data into the path "./glove/glove.twitter.27B.200d.txt"
 
 
 #### [1] Disentangling experiments
- * run visdom server: bash run_server.sh
+ * run visdom server: $ bash run_server.sh
  * bash run_dsprites_pid_c18.sh
 
 #### [2] Image Generation experiments
