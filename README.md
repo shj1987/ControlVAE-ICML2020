@@ -10,6 +10,11 @@ Please cite our paper: <br />
   address={Vienna, Austria}<br />
 }
 
+
+---
+### Recent Changes
+* Updating the language model of text generation on PTB data. Previously, I forgot to commit it from my AWS server. Please use the latest version.
+
 ---
 ### Download the public data
 
