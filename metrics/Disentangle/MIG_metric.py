@@ -17,7 +17,7 @@ import numpy as np
 from tqdm import tqdm
 
 from model import BetaVAE_H, BetaVAE_B
-# from factmodel import FactorVAE1
+from factmodel import FactorVAE1
 from dataset import CustomTensorDataset
 
 import os
@@ -35,13 +35,13 @@ eps = 1e-8
 time_start = time.time()
 
 file_path = sys.argv[2]
-# model_map = {'betavae_h': BetaVAE_H, 'betavae_b': BetaVAE_B, 'factvae': FactorVAE1}
-model_map = {'betavae_h': BetaVAE_H, 'betavae_b': BetaVAE_B}
+print("checkpoint file_path:>> ", file_path)
+
+model_map = {'betavae_h': BetaVAE_H, 'betavae_b': BetaVAE_B, 'factvae': FactorVAE1}
+# model_map = {'betavae_h': BetaVAE_H, 'betavae_b': BetaVAE_B}
 model_name = sys.argv[1]
 
-
 # In[2]:
-
 
 def logsumexp(value, dim=None, keepdim=False):
     """Numerically stable implementation of the operation
@@ -249,10 +249,7 @@ shapes_dataset = CustomTensorDataset(**train_kwargs)
 
 # In[7]:
 
-
-dataset_loader = DataLoader(shapes_dataset, batch_size=1000, shuffle=False, num_workers=1)
-
-
+dataset_loader = DataLoader(shapes_dataset, batch_size=1000, shuffle=False, num_workers=0)
 # In[8]:
 
 
@@ -308,8 +305,8 @@ for i, xs in enumerate(dataset_loader):
 
 qz_params = Variable(qz_params.view(3, 6, 40, 32, 32, K, nparams).cuda())
 
-if model_name.lower() != 'factvae':
-    qz_params[:,:,:,:,:,:,1] = qz_params[:,:,:,:,:,:,1]/2 ## added by shao
+# if model_name.lower() != 'factvae':
+qz_params[:,:,:,:,:,:,1] = qz_params[:,:,:,:,:,:,1]/2 ## added by shao
 
 qz_samples = q_dist.sample(params=qz_params)
 
@@ -379,23 +376,21 @@ metric = compute_metric_shapes(marginal_entropies, cond_entropies)
 # return metric, marginal_entropies, cond_entropies
 
 
-# In[30]:
-
-
 print(marginal_entropies)
 print(cond_entropies)
 
 
 # In[31]:
 print('Metric: {}'.format(metric.cpu().numpy()))
-
-out_file = os.path.join(file_path.replace("/last",""), "MIG.txt")
+direct = os.path.dirname(file_path)
+out_file = os.path.join(direct, "MIG.txt")
 print("save to path >>: ", out_file)
 
-with open(out_file,"w") as fout:
+with open(out_file,"a") as fout:
+    fout.write(file_path + ": ")
     fout.write(str(metric.cpu().numpy()) + "\n")
 
 time_end = time.time()
 
 print("running time: ", (time_end-time_start)/60, "mins")
-# In[ ]:
+
