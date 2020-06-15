@@ -18,8 +18,8 @@ If you use our source code, please cite our paper: <br />
 
 ---
 ### Download the public data
-
-1. Data: Dsprites for Disentangling application
+#### -Dsprites for Disentangling application
+1. Dsprite Data for disentanglement
   * Step1: Enter the path "./Disentangling/"
   * Step2: sh prepare_data.sh dsprites
 
