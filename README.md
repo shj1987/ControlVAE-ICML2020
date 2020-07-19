@@ -13,10 +13,8 @@ If you use our source code, please cite our paper: <br />
 
 ---
 ### :bulb: Recent Changes :bulb:
-#### 2020.06.15
-* We are going to update the Camera ready of ICML on arXiv to fix some typos and new experimental results.
-#### 2020.06.12
-* Updating the language model of text generation on PTB data. Previously, I forgot to commit it from my AWS server. Please clone the latest version. If you have any questions, please feel free to contact me (hshao5@illinois.edu).
+#### 2020.07.18
+If you have any questions, please feel free to contact me (hshao5@illinois.edu).
 
 ---
 ### Download the public data
