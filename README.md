@@ -13,6 +13,8 @@ If you use our source code, please cite our paper: <br />
 
 ---
 ### :bulb: Recent Changes :bulb:
+#### 2020.07.30
+About how to set the KL value, one way is to run the basic VAE and get its KL value, then you can slightly increase and decrease the KL value as you want.
 #### 2020.07.18
 If you have any questions, please feel free to contact me (hshao5@illinois.edu).
 
