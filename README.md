@@ -7,7 +7,7 @@ If you use our source code, please cite our paper: <br />
   author={Shao, Huajie and Yao, Shuochao and Sun, Dachun and Zhang, Aston and Liu, Shengzhong and Liu, Dongxin and Wang, Jun and Abdelzaher, Tarek}, <br />
   journal={Proceedings of the 37th International Conference on Machine Learning (ICML)}, <br />
   year={2020},<br />
-  address={Vienna, Austria}<br />
+  address={Online}<br />
 }
 
 
