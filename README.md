@@ -1,5 +1,5 @@
 # ControlVAE-ICML2020
-We release the source code for our paper "ControlVAE: Controllable Variational Autoencoder" published at ICML 2020. It can be used for disentanglement representation learning, text generation and image generation.
+We release the source code for our paper "ControlVAE: Controllable Variational Autoencoder" published at ICML 2020. It can be used for disentangled representation learning, text generation and image generation.
 
 If you use our source code, please cite our paper: <br />
 @article{shao2020controlvae, <br />
