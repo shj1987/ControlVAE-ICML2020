@@ -12,6 +12,10 @@ If you use our source code, please cite our paper: <br />
 
 
 ---
+### :bulb: How to use PI controller and tune Kp and Ki parameters :bulb:
+The PI controller can serve as a plug in component in the front of hyperparameter on KL term or other terms. You can directly import the P_PID.py and set Kp and Ki as a small value, such as -0.001, 0.0001. Basically, we need to choose small hyperparameters of PI controller to guarantee the stability of control system.
+
+---
 ### :bulb: Recent Changes :bulb:
 #### 2020.07.30
 About how to set the KL value, one way is to run the basic VAE and get its KL value, then you can slightly increase and decrease the KL value as you want.
