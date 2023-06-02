@@ -6,6 +6,7 @@ import glob
 from torchvision.utils import make_grid, save_image
 import re
 import sys
+import os
 
 # %%
 def atoi(text):
@@ -26,15 +27,20 @@ def combineImages(name_initial, indices):
     for index in indices:
         for image in images:
             allt.append(image[:, :, (index * width):((index + 1) * width - padding)])
-    save_image(tensor=torch.tensor(allt), filename='{}_combined.jpg'.format(name_initial), nrow=steps, pad_value=1)
-
+    save_image(tensor=torch.tensor(allt), fp='result/{}_combined.eps'.format(name_initial), nrow=steps, pad_value=1)
+    
 
 # %%
-combineImages('fixed_heart', [2, 4, 5, 6, 9, 8])
-
+# combineImages('fixed_heart', [2, 4, 5, 6, 9, 8])
+# label_lst = ['z1 (y)','z2','z3','z4','z5','z6 (Orientation)','z7 (Shape)',\
+                # 'z8 (x)','z9','z10 (Scale)','total KL']
 
 # %%
 if __name__ == '__main__':
-    combineImages(sys.argv[1], [int(x) for x in sys.argv[2:]])
-
-# %%
+    directory = 'result'
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    # combineImages(sys.argv[1], [int(x) for x in sys.argv[2:]])
+    # combineImages('fixed_ellipse', [0,1,2,3,4,5,6,7,8,9])
+    combineImages('fixed_ellipse', [0,6])
+    
